@@ -1,3 +1,5 @@
+//AUTHOR: Dhruv Bindoria
+
 package com.dao;
 
 import java.sql.Connection;
@@ -9,13 +11,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 public class JdbcOps {
-	//Why have you made them constants?
-	final static String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
-	final static String ORACLE_URL = "jdbc:oracle:thin:@localhost:1521:xe";
-	final static String ORACLE_USERNAME = "db";
-	final static String ORACLE_PASSWORD = "Newuser123";
+	//Made these constants because I don't want any other application/class to change these global settings as they are fixed and universal
+	final static String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver"; //Note that I've used Oracle 11g Express Edition
+	final static String ORACLE_URL = "jdbc:oracle:thin:@localhost:1521:xe"; //Used ojdbc6.jar
+	final static String ORACLE_USERNAME = "db"; //This the workspace. Note: "system" is a different workspace and "db" is a user created workspace in oracle 11g.
+	final static String ORACLE_PASSWORD = "Newuser123"; //I've kept password common for all, because it is too much convenient...
 	
-	//Decide on why you've kept these variables as static?
+	//I feel it's a good practice to put queries into variables which can be changed if need later in time with help of getter and setter methods.
 	private static String insert_query = "INSERT INTO LTIEMP VALUES(?,?,?,?)";
 	private static String update_amount = "UPDATE LTIEMP SET amt = (amt + (amt*0.05)) WHERE rno = ?";
 	private static String find_by_id = "SELECT * FROM LTIEMP WHERE rno = ?";
@@ -65,21 +67,12 @@ public class JdbcOps {
 		JdbcOps.select_all = select_all;
 	}
 
-	public Statement getS() {
-		return s;
-	}
-
-	public PreparedStatement getPs() {
-		return ps;
-	}
-
-
 	//Module for creating connection
 	public Connection openConnection() {
 		Connection con = null;
 		try {
-			Class.forName(ORACLE_DRIVER);
-			con = DriverManager.getConnection(ORACLE_URL, ORACLE_USERNAME, ORACLE_PASSWORD);
+			Class.forName(ORACLE_DRIVER); //Driver gets loaded..
+			con = DriverManager.getConnection(ORACLE_URL, ORACLE_USERNAME, ORACLE_PASSWORD); //Connection gets established..
 		} catch (SQLException e) {
 			System.out.println("Some error related to establishing connection -> " + e);
 			e.printStackTrace();
@@ -95,12 +88,12 @@ public class JdbcOps {
 		Connection con = openConnection();
 		int i = 0;
 		try {
-			ps = con.prepareStatement(getInsert_query());
+			ps = con.prepareStatement(getInsert_query()); //The query here is dynamic query, means values will be taken by user a runtime. Hence, prepareStatement() is used.
 			ps.setInt(1, id);
 			ps.setString(2, name);
 			ps.setString(3, pwd);
 			ps.setDouble(4, amt);
-			i = ps.executeUpdate();
+			i = ps.executeUpdate(); //On executing DML queries, the row count of the change-affected row(s) is returned. Hence, executeUpdate() is used.
 			con.close();
 		} catch (SQLException e) {
 			System.out.println("Error, used prepareStatement" + e);
@@ -133,8 +126,8 @@ public class JdbcOps {
 			Connection con = openConnection();
 			ps = con.prepareStatement(getFind_by_id());
 			ps.setInt(1, id);
-			ResultSet rs = ps.executeQuery();
-			ResultSetMetaData rsmd = rs.getMetaData();
+			ResultSet rs = ps.executeQuery(); //On executing DQL queries, the respective record(s) are returned, so we need rs variable of type ResultSet to store it. Hence executeUpdate() is used
+			ResultSetMetaData rsmd = rs.getMetaData(); //For fetching out the meta data and the column name and numbers..
 			for(int i = 1; i <= rsmd.getColumnCount(); i++) {
 				System.out.print(rsmd.getColumnName(i) + "\t");
 			}
@@ -169,7 +162,7 @@ public class JdbcOps {
 	public void displayAll() {
 		Connection con = openConnection();
 		try {
-			s = con.createStatement();
+			s = con.createStatement(); //This is a static type query, means no user input required. Hence createStatemnet is used
 			ResultSet rs = s.executeQuery(getSelect_all());
 			ResultSetMetaData rsmd = rs.getMetaData();
 			for(int i = 1; i <= rsmd.getColumnCount(); i++) {
@@ -179,6 +172,7 @@ public class JdbcOps {
 			while(rs.next()) {
 				System.out.println(rs.getInt(1) + "\t" + rs.getString(2) + "\t" + rs.getString(3) + "\t" + rs.getDouble(4));
 			}	
+			con.close();
 		} catch (SQLException e) {
 			System.out.println("Error, used Statement, createStatement, executeQuery(str)");
 			e.printStackTrace();
