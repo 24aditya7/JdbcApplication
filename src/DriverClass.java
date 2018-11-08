@@ -5,7 +5,7 @@ public class DriverClass {
 
 	public static void main(String[] args) {
 		int choice, i;
-		boolean again;
+		String again;
 		Scanner sc = new Scanner(System.in);
 		JdbcOps jo = new JdbcOps();
 		do {
@@ -20,41 +20,46 @@ public class DriverClass {
 			case 1: 
 				System.out.println("Insert ID, NAME, PASSWORD, AMOUNT");
 				i = jo.insertValues(sc.nextInt(), sc.next(), sc.next(), sc.nextDouble());
+				if(i>0)
+					System.out.println(i + " record(s) updated.. ");
+				else
+					System.out.println("Oops, something went wrong..");
 				break;
 			
 			case 2:
 				System.out.println("Increase salary by 5%, enter an Employee Id: ");
-				i = jo.updateSalary(sc.nextInt());
+				i = jo.updateAmount(sc.nextInt());
+				if(i>0)
+					System.out.println(i + " record(s) updated.. ");
+				else
+					System.out.println("Oops, something went wrong..");
 				break;
 			
 			case 3:
 				System.out.println("Search by Id: ");
-				i = jo.searchEmployee(sc.nextInt());
+				jo.searchEmployee(sc.nextInt());
 				break;
 				
 			case 4:
 				System.out.println("Delete data of employee id: ");
 				i = jo.deleteRow(sc.nextInt());
+				if(i>0)
+					System.out.println(i + " record(s) updated.. ");
+				else
+					System.out.println("Oops, something went wrong..");
 				break;
 				
 			case 5:
 				System.out.println("Displaying all records..");
-				i = jo.displayAll();
+				jo.displayAll();
 				break;
 				
 			default: 
 				System.out.println("I think you've given a wrong choice..");
-				continue skipvalidation;
 			}
-			
-			if(i>0)
-				System.out.println(i + "record(s) updated.. ");
-			else
-				System.out.println("Oops, something went wrong..");
-			
-			skipvalidation: 
-			System.out.println("Would you like to continue? \n1 for yes, 0 for no");
-			again = sc.hasNextBoolean();
-		}while(again);	
+			System.out.println("Would you like to continue? \ny for yes, n for no");
+			again = sc.next();
+		}while(again.equals("y"));	
+		System.out.println("Thank you..");
 	}
 }
