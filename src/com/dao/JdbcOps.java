@@ -10,6 +10,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
+import java.util.ArrayList;
+
+import jdbcapp.LtiEmp;
+
 public class JdbcOps {
 	//Made these constants because I don't want any other application/class to change these global settings as they are fixed and universal
 	final static String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver"; //Note that I've used Oracle 11g Express Edition
@@ -84,7 +88,7 @@ public class JdbcOps {
 	}
 	
 	//Module for saving/inserting data
-	public int insertValues(int id, String name, String pwd, double amt) {
+	public int insertValues(ArrayList<LtiEmp> lst) {
 		Connection con = openConnection();
 		int i = 0;
 		try {

@@ -1,5 +1,8 @@
+package jdbcapp;
 //AUTHOR: Dhruv Bindoria
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Scanner;
 import com.dao.JdbcOps;
 
@@ -10,6 +13,8 @@ public class DriverClass {
 		String again;
 		Scanner sc = new Scanner(System.in);
 		JdbcOps jo = new JdbcOps();
+		LtiEmp lemp = new LtiEmp();
+		Collection<LtiEmp> lst = new ArrayList<LtiEmp>();
 		do {
 			System.out.println("Enter number to perform corresponding action on the LTIEMP table: ");
 			System.out.println("1. Insert Values");
@@ -21,7 +26,12 @@ public class DriverClass {
 			switch(choice) {
 			case 1: 
 				System.out.println("Insert ID, NAME, PASSWORD, AMOUNT");
-				i = jo.insertValues(sc.nextInt(), sc.next(), sc.next(), sc.nextDouble());
+				lemp.setRno(sc.nextInt());
+				lemp.setUname(sc.next());
+				lemp.setPass(sc.next());
+				lemp.setAmt(sc.nextDouble());
+				lst.add(lemp);
+				i = jo.insertValues(lst);
 				if(i>0)
 					System.out.println(i + " record(s) updated.. ");
 				else
