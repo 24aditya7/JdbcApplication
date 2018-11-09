@@ -11,6 +11,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import jdbcapp.LtiEmp;
 
@@ -89,14 +90,16 @@ public class JdbcOps {
 	
 	//Module for saving/inserting data
 	public int insertValues(ArrayList<LtiEmp> lst) {
+		//Type Casting is required if the argument of this method was of Collection type..
+		//ArrayList<LtiEmp> al = (ArrayList<LtiEmp>)lst;
 		Connection con = openConnection();
 		int i = 0;
 		try {
 			ps = con.prepareStatement(getInsert_query()); //The query here is dynamic query, means values will be taken by user a runtime. Hence, prepareStatement() is used.
-			ps.setInt(1, id);
-			ps.setString(2, name);
-			ps.setString(3, pwd);
-			ps.setDouble(4, amt);
+			ps.setInt(1, lst.get(0).getRno());
+			ps.setString(2, lst.get(0).getUname());
+			ps.setString(3, lst.get(0).getPass());
+			ps.setDouble(4, lst.get(0).getAmt());
 			i = ps.executeUpdate(); //On executing DML queries, the row count of the change-affected row(s) is returned. Hence, executeUpdate() is used.
 			con.close();
 		} catch (SQLException e) {
