@@ -1,5 +1,4 @@
 package jdbcapp;
-
 public class LtiEmp {
 	private int rno;
 	private String uname;
